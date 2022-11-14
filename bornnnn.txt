@@ -1,0 +1,159 @@
+============================================= Signature.txt
+8fd7efcf2ae13f412afd2a7273eb8d928c028d10
+
+============================================= Project overview
+What is a Virtual Machine?
+
+Virtual machines are made possible through virtualization technology. Virtualization uses software to simulate virtual hardware that allows multiple VMs to run on a single machine. The physical machine is known as the host while the VMs running on it are called guests.
+
+This process is managed by software known as a hypervisor. The hypervisor is responsible for managing resources—like memory and storage—from the host to guests. It also schedules operations in VMs.
+
+=============================================
+Why did I choose Debian?
+
+Easier to install and configure.
+
+=============================================
+Difference between Debian and CentOS?
+
+Debian is a lot easier to update then CentOS when a new version is released. 
+Debian is more user-friendly and supports many libraries. 
+
+=============================================
+The purpose of virtual machines:
+
+To lunch more at least two operating systems in the same machine.
+
+=============================================
+What is the difference between aptitude and APT (Advanced Packaging Tool)?
+
+Aptitude et apt sont deux outils populaires de gestion de packages. Les deux sont capables de gérer toutes sortes d’activités sur les paquets, y compris l’installation, la suppression, la recherche, etc.
+
+Aptitude is a high-level package manager while APT is lower level
+
+Aptitude is smarter and will automatically remove unused packages or suggest installation of dependent packages
+
+Apt will only do explicitly what it is told to do in the command line
+==============================================
+What is AppArmor?
+
+AppArmor (Application Armor) est un logiciel de sécurité pour Linux qui donne au root le droit de fixer aux users ce qu ils peuvent faire.
+============================================== Simple setup
+
+The password chosen respect the rules imposed in the subject
+sudo ufw status
+sudo systemctl status ssh
+The chosen operating system is Debian : it s mentioned in the script that it runs every 10 minutes
+==============================================  User
+
+getent group sudo
+getent group user42
+
+
+sudo adduser aymen
+
+How was I able to set up the rules requested in the subject ?
+sudo apt-get install libpam-pwquality       to install Password Quality Checking Library
+sudo vim /etc/pam.d/common-password         First file
+sudo vim /etc/login.defs                    second file 
+sudo reboot                                 to reboot the change affects
+
+
+sudo groupadd evaluating
+sudo usermod -aG evaluating aymen
+getent group evaluating
+sudo chage -l aymen                      to check if the password rules are working in the new user
+
+The advantages and disadvantages of this password policy :
+For the password rules, we use the password quality checking library and there are two files the common-password file which sets the rules like upper and lower case characters, duplicate characters etc and the login.defs file which stores the password expiration rules (30 days etc). 
+=============================================== Hostname and partitions
+
+hostnamectl
+Sudo hostnamectl set-hostname corrector_login42        to change the current hostname
+Restart your Virtual Machine.
+hostname					  to display the current hostname
+
+lsblk                                             to display the partitions
+How LVM works ?
+Logical Volume Manager – allows us to easily manipulate the partitions or logical volume on a storage device or volumes in a dynamically way.
+For our case we give root 10 G ...
+================================================ SUDO
+
+dpkg -l | grep sudo                                to show that sudo is installed
+usermod -aG sudo aymen                             to add user in the sudo group 
+getent group sudo                                  To check if user is in sudo group
+
+The value of sudo:
+
+sudo (abréviation de "substitute user do" en français : « se substituer à l'utilisateur pour faire ») est une commande informatique utilisée principalement dans les systèmes d'exploitation de type Unix.
+
+Cette commande permet à un administrateur système d'accorder à certains utilisateurs (ou groupes d'utilisateurs) la possibilité de lancer une commande en tant qu'administrateur, ou en tant qu'autre utilisateur, tout en conservant une trace des commandes saisies et des arguments.
+
+
+Examples of using sudo:
+
+sudo groupadd testgroup                               to create a testgroup
+
+
+Checking the existence of var/log/sudo and that it contains a file named  sudo.log :
+
+Cd ..
+Cd ..
+Cd ..
+cd var/log/sudo
+ls
+
+History of the commands used with sudo:			sudo nano /var/log/sudo/sudo.log
+================================================ UFW
+
+sudo ufw status                                         to check if the UFW program is properly installed and runned
+
+The value of UFW:
+
+
+Un pare-feu (de l'anglais firewall) est un logiciel et/ou un matériel permettant de faire respecter la politique de sécurité du réseau, celle-ci définissant quels sont les types de communications autorisés sur ce réseau informatique. Il surveille et contrôle les applications et les flux de donnée.
+
+Il est possible de piloter le pare-feu de Linux. Le principal inconvénient est que les commandes à taper sont relativement difficiles à retenir. UFW (Uncomplicated Firewall) permet de simplifier la gestion des règles du pare-feu.
+
+sudo ufw status numbered				To find the rule number for UFW rules (a rule must exist for port 4242)
+
+sudo ufw allow 8080					To open a port (SSH in this example)
+sudo ufw status numbered				To find the rule number for UFW rules  (a rule must exist for port 8080)
+sudo ufw delete rule number (for example 1 or 2 or 3)				To delete a new rule
+
+================================================ SSH
+
+sudo systemctl status ssh				To check that the SSH service is installed and is working.
+
+
+The value of SSH:
+
+SSH or Secure Shell is an authentication mechanism between a client and a host. It uses encryption techniques so that all communication between clients and hosts is done in encrypted form.
+
+How to use ssh in order to log with the newly created user?
+
+ssh your_user_id@127.0.0.1 -p 4242 			do this in terminal to show that SSH to port 4242 is working
+
+
+
+
+
+================================================ Script monitoring
+
+
+What is Cron?
+
+Cron or cron job is a command line utility to schedule commands or scripts to happen at specific intervals or a specific time each day. 
+Useful if you want to set your server to restart at a specific time each day.
+
+cd /usr/local/bin  					to show monitoring.sh
+ls -la   						to check the existence and the rights of monitoring.sh
+sudo crontab -u root -e 				to edit the cron job (and it s here where we schedule the script to happen each 10 minutes)
+
+*/1 * * * * /usr/local/bin/monitoring.sh		to run it every 60  seconds,
+Restart the server and check it.
+
+delete the line to stop its running and replace it by */10 * * * * /usr/local/bin/monitoring.sh.
+cd /usr/local/bin  					to show monitoring.sh
+ls -la   						to check the existence and the rights of monitoring.sh
+================================================
